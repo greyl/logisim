@@ -106,26 +106,23 @@ public class ModelReorderAction extends ModelAction {
 
     private static void repairRequests(List<ReorderRequest> reqs) {
         for (int i = 0, n = reqs.size(); i < n; i++) {
-            ReorderRequest req = reqs.get(i);
-            int from = req.getFromIndex();
-            int to = req.getToIndex();
+            int from = reqs.get(i).getFromIndex();
+            int to = reqs.get(i).getToIndex();
             for (int j = 0; j < i; j++) {
                 ReorderRequest prev = reqs.get(j);
-                int prevFrom = prev.getFromIndex();
-                int prevTo = prev.getToIndex();
-                if (prevFrom <= from && from < prevTo) {
+                if (prev.getFromIndex() <= from && from < prev.getToIndex()) {
                     from--;
-                } else if (prevTo <= from && from < prevFrom) {
+                } else if (prev.getToIndex() <= from && from < prev.getFromIndex()) {
                     from++;
                 }
-                if (prevFrom <= to && to < prevTo) {
+                if (prev.getFromIndex() <= to && to < prev.getToIndex()) {
                     to--;
-                } else if (prevTo <= to && to < prevFrom) {
+                } else if (prev.getToIndex() <= to && to < prev.getFromIndex()) {
                     to++;
                 }
             }
-            if (from != req.getFromIndex() || to != req.getToIndex()) {
-                reqs.set(i, new ReorderRequest(req.getObject(), from, to));
+            if (from != reqs.get(i).getFromIndex() || to != reqs.get(i).getToIndex()) {
+                reqs.set(i, new ReorderRequest(reqs.get(i).getObject(), from, to));
             }
         }
         for (int i = reqs.size() - 1; i >= 0; i--) {
